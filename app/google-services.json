@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1021450715229",
+    "project_id": "amarmarket-e656a",
+    "storage_bucket": "amarmarket-e656a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1021450715229:android:30ae8fdffcb7b6bde30db4",
+        "android_client_info": {
+          "package_name": "com.example.amarmarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1021450715229-gfil76899ql860hquftl7tv5g4u7h1fi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl4F2pOQO7YpTtv-RgdZq2vamogINRc_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1021450715229-gfil76899ql860hquftl7tv5g4u7h1fi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

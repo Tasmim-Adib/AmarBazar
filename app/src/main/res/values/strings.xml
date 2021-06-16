@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">AmarMarket</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_category">Categories</string>
+    <string name="nav_myCart">My Cart</string>
+    <string name="nav_myOrder">My Orders</string>
+    <string name="nav_logout">Log Out</string>
+    <string name="nav_open_drawyer">Open Nav Drawyer</string>
+    <string name="nav_close_drawyer">Close Nav Drawyer</string>
+    <string-array name="choice">
+        <item>Customer</item>
+        <item>Seller</item>
+    </string-array>
+
+    <string name="haveAnAccount">Already Have an Account?</string>
+    <string name="needAnAccount">Need an Account? Sign Up</string>
+    <string name="login">Login</string>
+    <string name="emailAddress">Email</string>
+    <string name="password">Password (8 Characters)</string>
+    <string name="signup">Sign Up</string>
+    <string name="needAccount">Need An Account?</string>
+    <string name="username">User Name</string>
+    <string name="shopname">Name of you Shop</string>
+</resources>
