@@ -2,191 +2,150 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="vertical">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-
-        <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <GridLayout
+            android:id="@+id/category_grid_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:paddingTop="10dp"
-            android:id="@+id/man_fashion_layout">
-
-            <TextView
-                android:id="@+id/tvText"
+            android:layout_height="match_parent"
+            android:columnCount="1"
+            android:rowCount="4"
+            android:layout_margin="25dp">
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="Man's Fashion"
-                android:textSize="20sp"
-                android:textColor="#FF0000"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_toStartOf="@id/tvText"
-                android:background="#FF0000"
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/tvText"
-                android:background="#FF0000"
-                />
-        </RelativeLayout>
-        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
-            android:id="@+id/category_viewpager"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_margin="30dp"
-            android:layout_below="@+id/man_fashion_layout"
-            />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/category_viewpager"
-            android:id="@+id/woman_fashion_layout">
-
-            <TextView
-                android:id="@+id/tvText1"
+                android:layout_gravity="fill"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_row="0"
+                android:layout_column="0"
+                app:cardCornerRadius="8dp"
+                android:layout_margin="10dp"
+                android:id="@+id/man_fashion_cardView"
+                app:cardElevation="8dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/man_collection"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Men's Fashion"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        android:paddingBottom="10dp"
+                        />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="Woman's Fashion"
-                android:textSize="20sp"
-                android:textColor="#FF0000"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_toStartOf="@id/tvText1"
-                android:background="#FF0000"
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/tvText1"
-                android:background="#FF0000"
-                />
-        </RelativeLayout>
-        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
-            android:id="@+id/woman_viewpager"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_margin="30dp"
-            android:layout_below="@+id/woman_fashion_layout"
-            />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/woman_viewpager"
-            android:id="@+id/kid_fashion_layout">
-
-            <TextView
-                android:id="@+id/tvText2"
+                android:layout_margin="10dp"
+                android:layout_gravity="fill"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:id="@+id/woman_fashion_cardView"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/women_collection"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Women's Fashion"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:paddingBottom="10dp"
+                        />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:textSize="20sp"
-                android:text="Kid's Fashion"
-                android:textColor="#FF0000"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_toStartOf="@id/tvText2"
-                android:background="#FF0000"
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/tvText2"
-                android:background="#FF0000"
-                />
-        </RelativeLayout>
-        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
-            android:id="@+id/kid_viewpager"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_margin="30dp"
-            android:layout_below="@id/kid_fashion_layout"
-            />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/kid_viewpager"
-            android:id="@+id/gift_fashion_layout">
-
-            <TextView
-                android:id="@+id/tvText3"
+                android:layout_gravity="fill"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_row="2"
+                android:layout_column="0"
+                app:cardCornerRadius="8dp"
+                android:layout_margin="10dp"
+                android:id="@+id/kid_fashion_cardView"
+                app:cardElevation="8dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/kids_collection"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kid's Fashion"
+                        android:textSize="18sp"
+                        android:paddingBottom="10dp"
+                        android:textColor="@android:color/black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="Gift Item"
-                android:textSize="20sp"
-                android:textColor="#FF0000"/>
+                android:layout_gravity="fill"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_row="3"
+                android:layout_column="0"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="8dp"
+                android:id="@+id/gift_item_cardView"
+                app:cardElevation="8dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/gift_birthday"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gift Item" android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        android:paddingBottom="10dp"
+                        />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_toStartOf="@id/tvText3"
-                android:background="#FF0000"
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/tvText3"
-                android:background="#FF0000"
-                />
-        </RelativeLayout>
-        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
-            android:id="@+id/gift_viewpager"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_margin="30dp"
-            android:layout_below="@id/gift_fashion_layout"
-            />
-
-
-
+        </GridLayout>
     </RelativeLayout>
+
+
 
 
 </ScrollView>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AmarMarket</string>
+    <string name="app_name">Amar Bazar</string>
     <string name="nav_home">Home</string>
     <string name="nav_category">Categories</string>
     <string name="nav_myCart">My Cart</string>
@@ -19,6 +19,51 @@
     <string name="password">Password (8 Characters)</string>
     <string name="signup">Sign Up</string>
     <string name="needAccount">Need An Account?</string>
-    <string name="username">User Name</string>
     <string name="shopname">Name of you Shop</string>
+    <string name="username">Username</string>
+    <string name="contact">Contact No.</string>
+    <string name="address">Where to Deliver</string>
+    <string name="register">Register</string>
+    <string name="ok">OK</string>
+    <string name="update">Update Profile</string>
+    <string name="updatebtn">Update</string>
+    <string name="orders">Orders</string>
+    <string name="likes">Likes</string>
+    <string name="view">View</string>
+    <string name="decline">Decline</string>
+    <string-array name="Sizes">
+        <item>S</item>
+        <item>M</item>
+        <item>L</item>
+        <item>XL</item>
+        <item>XXL</item>
+        <item>XXXL</item>
+    </string-array>
+    <string-array name="Pant_sizes">
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+    </string-array>
+
+    <string-array name="priceFilter">
+        <item>Any Price</item>
+        <item>Below 500</item>
+        <item>500 - 1000</item>
+        <item>1000 - 1500</item>
+        <item>1500 - 2000</item>
+        <item>Over 2000</item>
+    </string-array>
+
+    <string name="sizes_prompt">Size</string>
+
+    <string name="message">Please provide valid information so that we can perform your delivery Properly.</string>
 </resources>

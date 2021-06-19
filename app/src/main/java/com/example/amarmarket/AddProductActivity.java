@@ -17,9 +17,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,23 +35,43 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-public class AddProductActivity extends AppCompatActivity {
+import java.util.HashMap;
+
+public class AddProductActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private ImageView addProductImage;
-    private EditText addProuctId,addProductType,addProductPrice;
-    private Button addProuductButton;
+    private EditText addProuctId,addProductType,addProductPrice,productSubCategory,productCategory;
+    private Button addProuductButton,okButton;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private Uri imageUri;
     private Bitmap imageStore;
-    private String currentUserId,productKey;
+    private String currentUserId,productKey,size;
     private FirebaseAuth mAuth;
+    private Spinner sizeSpinner;
+    private EditText quantityEditText;
+    private HashMap hashMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
         init();
+        hashMap = new HashMap();
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.Sizes,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sizeSpinner.setAdapter(adapter);
+        sizeSpinner.setOnItemSelectedListener(this);
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sizeTotal = quantityEditText.getText().toString();
+                hashMap.put(getSize(),sizeTotal);
+                Toast.makeText(getApplicationContext(),getSize() + " " + sizeTotal,Toast.LENGTH_SHORT).show();
+            }
+        });
 
         addProductImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +85,7 @@ public class AddProductActivity extends AppCompatActivity {
             public void onClick(View v) {
                 productKey = databaseReference.push().getKey();
                 saveData();
+
             }
         });
     }
@@ -79,8 +103,12 @@ public class AddProductActivity extends AppCompatActivity {
         addProductPrice = findViewById(R.id.add_product_product_price);
         addProuductButton = findViewById(R.id.add_product_add_button);
         mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid().toString();
-
+        currentUserId = mAuth.getCurrentUser().getUid();
+        sizeSpinner = findViewById(R.id.add_product_spinner_size);
+        okButton = findViewById(R.id.add_product_ok_button);
+        quantityEditText = findViewById(R.id.add_product_quantity_texView);
+        productSubCategory = findViewById(R.id.add_product_sub_Category);
+        productCategory = findViewById(R.id.add_product_Category);
 
 
     }
@@ -121,10 +149,13 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void saveData(){
-        final String productid,productType,productPrice;
+        final String productid,productType,productPrice,subcategory,category;
         productid = addProuctId.getText().toString();
         productType = addProductType.getText().toString();
         productPrice = addProductPrice.getText().toString();
+
+        subcategory = productSubCategory.getText().toString();
+        category = productCategory.getText().toString();
         StorageReference filePath = storageReference.child(productKey + "."+getFileExtension(imageUri));
         filePath.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -134,11 +165,16 @@ public class AddProductActivity extends AppCompatActivity {
                         while(!uriTask.isSuccessful());
                         Uri downloadUrl = uriTask.getResult();
 
-                        Upload upload = new Upload(productid,productType,productPrice,downloadUrl.toString());
+                        Upload upload = new Upload(productid,productType,productPrice,downloadUrl.toString(),Integer.toString(0),Integer.toString(0),currentUserId,category);
                         databaseReference.child("Product").child(productKey).setValue(upload);
+                        databaseReference.child("Category").child(category).child(subcategory).child(productKey).child("Price").setValue(productPrice);
+                        databaseReference.child("Product").child(productKey).child("Sizes").setValue(hashMap);
                         Toast.makeText(getApplicationContext(), "Successfully stored", Toast.LENGTH_SHORT).show();
-
-
+                        addProductType.setText(null);
+                        addProuctId.setText(null);
+                        addProductPrice.setText(null);
+                        quantityEditText.setText(null);
+                        hashMap = new HashMap();
 
                     }
                 })
@@ -148,5 +184,25 @@ public class AddProductActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Error :"+exception, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        setSize(text);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
