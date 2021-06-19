@@ -1,84 +1,78 @@
 package com.example.amarmarket;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentCategory extends Fragment {
-    private HorizontalInfiniteCycleViewPager viewPager2,womenFashionViewPager,kidFashioViewpager,giftItemViewpager;
     private View itemView;
-    private Handler handler = new Handler();
+    private GridLayout categoryGridLayout;
+    private CardView manFashion,womanFashion,kidFashion,giftItem;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         itemView =  inflater.inflate(R.layout.fragment_category,container,false);
+        categoryGridLayout = itemView.findViewById(R.id.category_grid_layout);
 
-        viewPager2 = itemView.findViewById(R.id.category_viewpager);
-        manFashionSlider();
-        womenFashionViewPager = itemView.findViewById(R.id.woman_viewpager);
-        womanFashionSlider();
-
-        kidFashioViewpager = itemView.findViewById(R.id.kid_viewpager);
-        kidFashionSlider();
-
-        giftItemViewpager = itemView.findViewById(R.id.gift_viewpager);
-        giftSlider();
+        manFashion = itemView.findViewById(R.id.man_fashion_cardView);
+        womanFashion = itemView.findViewById(R.id.woman_fashion_cardView);
+        kidFashion = itemView.findViewById(R.id.kid_fashion_cardView);
+        giftItem = itemView.findViewById(R.id.gift_item_cardView);
+        manFashion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),CategorizedProduct.class);
+                intent.putExtra("Fashion","Man_Fashion");
+                startActivity(intent);
+            }
+        });
+        womanFashion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),CategorizedProduct.class);
+                intent.putExtra("Fashion","Woman_Fashion");
+                startActivity(intent);
+            }
+        });
+        kidFashion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),CategorizedProduct.class);
+                intent.putExtra("Fashion","Kid_Fashion");
+                startActivity(intent);
+            }
+        });
+        giftItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),CategorizedProduct.class);
+                intent.putExtra("Fashion","Gift_item");
+                startActivity(intent);
+            }
+        });
 
         return itemView;
     }
 
-    private void manFashionSlider(){
-        List<CategorySliderItem> sliderItems = new ArrayList<>();
 
-        sliderItems.add(new CategorySliderItem(R.drawable.men_tshirt,"T_Shirt"));
-        sliderItems.add(new CategorySliderItem(R.drawable.man_jeans,"Jeans"));
-        sliderItems.add(new CategorySliderItem(R.drawable.man_panjabi,"Panjabi"));
-        sliderItems.add(new CategorySliderItem(R.drawable.man_hoody,"Hoody"));
-        sliderItems.add(new CategorySliderItem(R.drawable.men_shirt,"Shirt"));
-        sliderItems.add(new CategorySliderItem(R.drawable.man_shoe,"Shoe"));
-        MyAdapter adapter = new MyAdapter(getContext(),sliderItems);
-        viewPager2.setAdapter(adapter);
-    }
-    private void womanFashionSlider() {
-        List<CategorySliderItem> sliderItems = new ArrayList<>();
-
-        sliderItems.add(new CategorySliderItem(R.drawable.woman_saree,"Saree"));
-        sliderItems.add(new CategorySliderItem(R.drawable.woman_salower,"Salower"));
-        sliderItems.add(new CategorySliderItem(R.drawable.woman_borkha,"Borkha"));
-        sliderItems.add(new CategorySliderItem(R.drawable.woman_hijab,"Hijab"));
-        sliderItems.add(new CategorySliderItem(R.drawable.woman_tshirt,"Woman T Shirt"));
-        MyAdapter adapter = new MyAdapter(getContext(),sliderItems);
-        womenFashionViewPager.setAdapter(adapter);
-    }
-    private void kidFashionSlider() {
-        List<CategorySliderItem> sliderItems = new ArrayList<>();
-
-        sliderItems.add(new CategorySliderItem(R.drawable.kid_woman_dress,"Dress"));
-        sliderItems.add(new CategorySliderItem(R.drawable.kid_tshirt,"Kid T Shirt"));
-        sliderItems.add(new CategorySliderItem(R.drawable.kid_pant,"Kid Pant"));
-        sliderItems.add(new CategorySliderItem(R.drawable.kid_panjabi,"Kid Panjabi"));
-        MyAdapter adapter = new MyAdapter(getContext(),sliderItems);
-        kidFashioViewpager.setAdapter(adapter);
-    }
-    private void giftSlider() {
-        List<CategorySliderItem> sliderItems = new ArrayList<>();
-
-        sliderItems.add(new CategorySliderItem(R.drawable.gift_wedding,"Wedding Gift"));
-        sliderItems.add(new CategorySliderItem(R.drawable.gift_birthday,"Birthday Gift"));
-        MyAdapter adapter = new MyAdapter(getContext(),sliderItems);
-        giftItemViewpager.setAdapter(adapter);
-
-    }
 
 }

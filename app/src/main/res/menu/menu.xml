@@ -11,7 +11,7 @@
         <item android:id="@+id/nav_category"
             android:title="@string/nav_category"
             android:icon="@drawable/ic_categories"/>
-
+        
         <item android:id="@+id/nav_logout"
             android:title="@string/nav_logout"
             android:icon="@drawable/ic_logout"
@@ -24,9 +24,13 @@
             <item android:id="@+id/nav_myCart"
                 android:title="@string/nav_myCart"
                 android:icon="@drawable/ic_my_cart"/>
+
             <item android:id="@+id/nav_myOrders"
                 android:title="@string/nav_myOrder"
                 android:icon="@drawable/ic_orders"/>
+            <item android:id="@+id/nav_update_profile"
+                android:title="@string/update"
+                android:icon="@drawable/ic_update"/>
         </menu>
     </item>
 

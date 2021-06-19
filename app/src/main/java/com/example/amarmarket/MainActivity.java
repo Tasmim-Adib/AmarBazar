@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
         passwordEditText = (EditText)findViewById(R.id.password_edit_text);
         loadingBar = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser().getUid().toString();
+        currentUser = mAuth.getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference().child("Images");
 
@@ -174,9 +174,8 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             setAccountType(list[position]);
-                            Toast.makeText(MainActivity.this, accountType, Toast.LENGTH_SHORT).show();
                             loadingBar.dismiss();
-                            sendUsertoFirstActivity();
+                            sendUsertoRegisterActivity();
                         }
                         else {
                             String message = task.getException().toString();
@@ -187,6 +186,14 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
                     }
                 });
 
+    }
+
+    private void sendUsertoRegisterActivity() {
+
+        Intent registerActivityIntent = new Intent(getApplicationContext(),BuyerRegister.class);
+        registerActivityIntent.putExtra("ACCOUNT_TYPE",getAccountType());
+        startActivity(registerActivityIntent);
+        finish();
     }
 
     @Override
