@@ -213,7 +213,7 @@ public class BuyerRegister extends AppCompatActivity {
             finish();
         }
         else{
-            Intent firstActivityIntent = new Intent(getApplicationContext(),Curstomer_drawyer.class);
+            Intent firstActivityIntent = new Intent(getApplicationContext(),AddProductActivity.class);
             startActivity(firstActivityIntent);
             finish();
         }

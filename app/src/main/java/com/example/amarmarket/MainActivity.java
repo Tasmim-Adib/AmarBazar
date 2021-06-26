@@ -18,8 +18,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
         setContentView(R.layout.activity_main);
         init();
 
-        if(currentUser != null){
+       if(currentUser != null){
             sendUsertoFirstActivity();
         }
 
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
         passwordEditText = (EditText)findViewById(R.id.password_edit_text);
         loadingBar = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser().getUid();
+       //
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference().child("Images");
 
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                currentUser = mAuth.getCurrentUser().getUid();
                                 sendUsertoFirstActivity();
                                 Toast.makeText(MainActivity.this, "Successfully Logged In", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
@@ -175,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
                         if (task.isSuccessful()) {
                             setAccountType(list[position]);
                             loadingBar.dismiss();
+                            currentUser = mAuth.getCurrentUser().getUid();
                             sendUsertoRegisterActivity();
                         }
                         else {
@@ -202,8 +207,28 @@ public class MainActivity extends AppCompatActivity implements PopUP.SingleChoic
     }
 
     private void sendUsertoFirstActivity() {
-        Intent firstActivityIntent = new Intent(getApplicationContext(),Curstomer_drawyer.class);
-        startActivity(firstActivityIntent);
-        finish();
+        databaseReference.child("Users").child(currentUser).child("Identity").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String a = snapshot.child("type").getValue().toString();
+                if(a.equals("Customer")){
+                    Intent firstActivityIntent = new Intent(getApplicationContext(),Curstomer_drawyer.class);
+                    startActivity(firstActivityIntent);
+                    finish();
+                }
+
+                else{
+                    Intent firstActivityIntent = new Intent(getApplicationContext(),ShopHome.class);
+                    startActivity(firstActivityIntent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 }

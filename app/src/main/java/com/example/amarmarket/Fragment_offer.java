@@ -1,15 +1,11 @@
 package com.example.amarmarket;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,9 +25,9 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FragmentHome extends Fragment {
+public class Fragment_offer extends Fragment {
     private View view;
-    private DatabaseReference databaseReference,shopLogoRef;
+    private DatabaseReference databaseReference,shopLogoRef,offerRef;
     private RecyclerView recyclerView;
     private CircleImageView myProfileImage;
 
@@ -42,27 +37,31 @@ public class FragmentHome extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_home,container,false);
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Product");
+        view =  inflater.inflate(R.layout.fragment_offer,container,false);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Offer_Product");
+        offerRef = FirebaseDatabase.getInstance().getReference().child("Product");
         shopLogoRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        recyclerView = (RecyclerView)view.findViewById(R.id.product_recycler_view_id);
+        recyclerView = (RecyclerView)view.findViewById(R.id.offer_product_recycler_view_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        load();
         return view;
     }
 
-    public void load() {
+    @Override
+    public void onStart() {
+        super.onStart();
 
         FirebaseRecyclerOptions options =
                 new FirebaseRecyclerOptions.Builder<Upload>()
                         .setQuery(databaseReference,Upload.class)
                         .build();
-        FirebaseRecyclerAdapter<Upload,ProductViewHolder> adapter =
-                new FirebaseRecyclerAdapter<Upload, ProductViewHolder>(options) {
+
+
+        FirebaseRecyclerAdapter<Upload, FragmentHome.ProductViewHolder> adapter =
+                new FirebaseRecyclerAdapter<Upload, FragmentHome.ProductViewHolder>(options) {
                     @Override
-                    protected void onBindViewHolder(@NonNull final ProductViewHolder productViewHolder, final int i, @NonNull Upload upload) {
+                    protected void onBindViewHolder(@NonNull final FragmentHome.ProductViewHolder productViewHolder, int i, @NonNull Upload upload) {
                         final String productId = getRef(i).getKey();
-                        databaseReference.child(productId).addValueEventListener(new ValueEventListener() {
+                        offerRef.child(productId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 final String productid = snapshot.child("productID").getValue().toString();
@@ -77,7 +76,6 @@ public class FragmentHome extends Fragment {
                                     productViewHolder.prductDiscountPrice.setText("Current Price : "+dis + "tk");
                                     productViewHolder.prductDiscountPrice.setVisibility(View.VISIBLE);
                                 }
-
 
 
                                 productViewHolder.productType.setText("Product Type : " +productType);
@@ -128,42 +126,13 @@ public class FragmentHome extends Fragment {
 
                     @NonNull
                     @Override
-                    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    public FragmentHome.ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item,parent,false);
-                        ProductViewHolder viewHolder = new ProductViewHolder(view);
+                        FragmentHome.ProductViewHolder viewHolder = new FragmentHome.ProductViewHolder(view);
                         return viewHolder;
                     }
                 };
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
-
-    public static class ProductViewHolder extends RecyclerView.ViewHolder{
-
-        public ImageView productImage;
-        public CircleImageView shopImage;
-        private View view;
-
-
-        public TextView shopContact,productId,productType,productPrice,shopAdd,prductDiscountPrice,thumbsUp,order,shopName;
-        public ProductViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            prductDiscountPrice = itemView.findViewById(R.id.recycler_view_product_discount_price);
-            productPrice = itemView.findViewById(R.id.recycler_view_product_price);
-            productType = itemView.findViewById(R.id.recycler_view_product_type);
-            productImage = itemView.findViewById(R.id.recycler_view_product_image);
-            thumbsUp = itemView.findViewById(R.id.thumbs_up_id);
-            order = itemView.findViewById(R.id.thumbs_order_id);
-            shopImage = itemView.findViewById(R.id.shop_logo_image);
-            shopName = itemView.findViewById(R.id.shop_logo_name);
-            productId = itemView.findViewById(R.id.recycler_view_product_id);
-            view = itemView.findViewById(R.id.viewid);
-            shopAdd = itemView.findViewById(R.id.shop_address);
-            shopContact = itemView.findViewById(R.id.shop_contact);
-        }
-
-
-    }
-    
 }

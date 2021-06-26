@@ -35,9 +35,10 @@ public class CategorizedProduct extends AppCompatActivity implements AdapterView
     private Spinner priceFilterSpinner;
     private String priceRange,item;
     private ArrayAdapter<String> subCategoryAdapter;
-    public String[] manFashion = {"Pant","Panjabi","T_Shirt","Shirt","Hoody","Shoe"};
-    public String[] womanFashion = {"Saree","Salower","Borkha","Hijab","Orna","Kurta"};
-    public String[] kidFashion = {"Pant","Panjabi","T_Shirt","Shirt","Shoe"};
+
+    public String[] manFashion = {"Pant","Punjabi","T-shirt","Shirt","Hoody"};
+    public String[] womanFashion = {"Saree","Shalwar Kameez","Borkha","Hijab","T-shirt","Kurta"};
+    public String[] kidFashion = {"Pant","Panjabi","T-shirt","Frock","Shoe"};
     public String[] gift = {"Birthday","Wedding"};
 
 
@@ -64,14 +65,14 @@ public class CategorizedProduct extends AppCompatActivity implements AdapterView
         priceFilterSpinner.setOnItemSelectedListener(this);
         loadItem();
 
-        if(item.equals("Man_Fashion")){
+        if(item.equals("Men's Fashion")){
             subCategoryAdapter = new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,manFashion);
         }
-        if(item.equals("Woman_Fashion")){
+        if(item.equals("Women's Fashion")){
             subCategoryAdapter = new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,womanFashion);
 
         }
-        if (item.equals("Kid_Fashion")){
+        if (item.equals("Kid's Fashion")){
             subCategoryAdapter = new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,kidFashion);
 
         }

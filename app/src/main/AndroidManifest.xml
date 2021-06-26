@@ -9,7 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CategorizedProduct"></activity>
+        <activity android:name=".ShopOrderedProduct"></activity>
+        <activity android:name=".ShopOrder" />
+        <activity android:name=".ShopHome" />
+        <activity android:name=".ShopViewProduct" />
+        <activity android:name=".ShopProductList" />
+        <activity android:name=".ShopCategory" />
+        <activity android:name=".OrderedProductDetails" />
+        <activity android:name=".CategorizedProduct" />
         <activity android:name=".BuyerRegister" />
         <activity android:name=".AddProductActivity" />
         <activity android:name=".ProductDetails" />

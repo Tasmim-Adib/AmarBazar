@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -39,121 +40,133 @@ public class FragmentMyCart extends Fragment{
 
     private View view;
     private RecyclerView recyclerView;
-    private EditText addressText,contactText;
-    private TextView confirm;
     private FirebaseAuth mAuth;
-    private String currentUser;
-    private DatabaseReference databaseReference,productRef,cartRef;
-    private LinearLayout linearLayout;
+    private String currentUser,shopId;
+    private DatabaseReference databaseReference,productRef,cartRef,removeRef,orderRef;
+    private Query query;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_my_cart,container,false);
         recyclerView = view.findViewById(R.id.cart_recycler_view);
-        addressText = view.findViewById(R.id.framentCart_address);
-        contactText = view.findViewById(R.id.framentCart_contact);
-        confirm = view.findViewById(R.id.framentCart_Confirm);
-        linearLayout = view.findViewById(R.id.address_contact_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
         productRef = FirebaseDatabase.getInstance().getReference().child("Product");
+        removeRef = FirebaseDatabase.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        orderRef = FirebaseDatabase.getInstance().getReference();
         cartRef = FirebaseDatabase.getInstance().getReference();
+        query = FirebaseDatabase.getInstance().getReference("Users").child(currentUser).child("MyCart").orderByChild("isHere").equalTo("ORDERED");
         cartRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser).child("MyCart");
 
-
-        databaseReference.child("Users").child(currentUser).child("Identity")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String contact = snapshot.child("contact").getValue().toString();
-                        String address = snapshot.child("address").getValue().toString();
-
-                        addressText.setText(address);
-                        contactText.setText(contact);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                linearLayout.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                loadData();
-            }
-        });
+        loadData();
 
         return view;
     }
 
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    private void removeProduct(String orderId,String orderProductId){
+        cartRef.child(orderId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(getContext(),"Product Removed from your cart",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        cartRef.child(orderProductId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+
+                }
+            }
+        });
+    }
+
     private void loadData(){
 
-        FirebaseRecyclerOptions options =
-                new FirebaseRecyclerOptions.Builder<Upload>()
-                        .setQuery(cartRef,Upload.class)
-                        .build();
-        FirebaseRecyclerAdapter<Upload,CartViewHolder> adapter =
-                new FirebaseRecyclerAdapter<Upload, CartViewHolder>(options) {
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<MakeOrder>()
+                .setQuery(query,MakeOrder.class)
+                .build();
+
+        FirebaseRecyclerAdapter<MakeOrder,CartViewHolder> adapter = new
+                FirebaseRecyclerAdapter<MakeOrder, CartViewHolder>(options) {
                     @Override
-                    protected void onBindViewHolder(@NonNull final CartViewHolder cartViewHolder, int i, @NonNull Upload upload) {
-                        final String product_ID = getRef(i).getKey();
-                        productRef.child(product_ID).addValueEventListener(new ValueEventListener() {
+                    protected void onBindViewHolder(@NonNull final CartViewHolder cartViewHolder, int i, @NonNull MakeOrder makeOrder) {
+                        final String orderId = getRef(i).getKey();
+                        databaseReference.child("Orders").child(orderId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                final String id = snapshot.child("productID").getValue().toString();
-                                String type = snapshot.child("productType").getValue().toString();
-                                String price = snapshot.child("productPrice").getValue().toString();
-                                String image = snapshot.child("productImageUrl").getValue().toString();
+                                final String orderProductID = snapshot.child("productId").getValue().toString();
+                                databaseReference.child("Product").child(orderProductID).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String id = snapshot.child("productID").getValue().toString();
+                                        String type = snapshot.child("productType").getValue().toString();
+                                        String logo = snapshot.child("productImageUrl").getValue().toString();
+                                        String price = snapshot.child("productPrice").getValue().toString();
+                                        String s = snapshot.child("shopId").getValue().toString();
+                                        setShopId(s);
 
-                                cartViewHolder.cartProductId.setText("Product ID ; "+id);
-                                cartViewHolder.cartProductType.setText("Category : "+type);
-                                cartViewHolder.cartProductPrice.setText("Price : "+price+" tk");
-                                Picasso.get().load(image).into(cartViewHolder.productLogo);
+                                        cartViewHolder.cartProductId.setText("Product ID : "+id);
+                                        cartViewHolder.cartProductPrice.setText("Price : "+price+"tk");
+                                        cartViewHolder.cartProductType.setText("Product Type : "+type);
+                                        Picasso.get().load(logo).into(cartViewHolder.productLogo);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
 
                                 cartViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         CharSequence item[] = new CharSequence[]{
                                                 "View",
+                                                "Confirm",
                                                 "Decline"
                                         };
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                        builder.setTitle(id + " View or Decline");
+                                        builder.setTitle("What do you Want?");
                                         builder.setItems(item, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if(which == 0){
-                                                    Intent intent = new Intent(getActivity(),ProductDetails.class);
-                                                    intent.putExtra("visit_product",product_ID);
+                                                    Intent intent = new Intent(getActivity(),OrderedProductDetails.class);
+                                                    intent.putExtra("visit_order",orderId);
                                                     startActivity(intent);
                                                 }
                                                 if(which == 1){
-                                                    cartRef.child(product_ID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                           if(task.isSuccessful()){
-                                                               Toast.makeText(getContext(),"Product Removed from your cart",Toast.LENGTH_SHORT).show();
-                                                           }
-                                                        }
-                                                    });
+
+                                                    orderRef.child("Users").child(getShopId()).child("Orders").child(orderId).child("isHere").setValue("YES");
+                                                    orderRef.child("Users").child(currentUser).child("Orders").child(orderId).child("isHere").setValue("YES");
+                                                    removeProduct(orderId,orderProductID);
+                                                    Toast.makeText(getContext(),"Order is Placed Successfully",Toast.LENGTH_SHORT).show();
+
+                                                }
+                                                if(which == 2){
+                                                   removeProduct(orderId,orderProductID);
                                                 }
                                             }
                                         });
                                         builder.show();
-
                                     }
                                 });
-
-
                             }
 
                             @Override
@@ -161,7 +174,6 @@ public class FragmentMyCart extends Fragment{
 
                             }
                         });
-
                     }
 
                     @NonNull
@@ -172,15 +184,14 @@ public class FragmentMyCart extends Fragment{
                         return viewHolder;
                     }
                 };
-
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
 
     public  static  class CartViewHolder extends RecyclerView.ViewHolder {
-        private CircleImageView productLogo;
-        private View view;
-        private TextView cartProductId,cartProductType,cartProductPrice,cartProductView,cartProductDecline;
+        public CircleImageView productLogo;
+        public View view;
+        public TextView state,cartProductId,cartProductType,cartProductPrice,cartProductView,cartProductDecline,cartAcceptView;
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             productLogo = itemView.findViewById(R.id.cart_sample_image);
@@ -190,6 +201,10 @@ public class FragmentMyCart extends Fragment{
             cartProductView = itemView.findViewById(R.id.cart_view_id);
             cartProductDecline = itemView.findViewById(R.id.cart_decline_id);
             view = itemView.findViewById(R.id.cart_bottom_line);
+            cartAcceptView = itemView.findViewById(R.id.cart_accept_id);
+            cartProductView = itemView.findViewById(R.id.cart_view_id);
+            cartProductDecline = itemView.findViewById(R.id.cart_decline_id);
+            state = itemView.findViewById(R.id.state_TextView);
         }
     }
 }

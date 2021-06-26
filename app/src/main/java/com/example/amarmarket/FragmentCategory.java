@@ -41,7 +41,7 @@ public class FragmentCategory extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),CategorizedProduct.class);
-                intent.putExtra("Fashion","Man_Fashion");
+                intent.putExtra("Fashion","Men's Fashion");
                 startActivity(intent);
             }
         });
@@ -49,7 +49,7 @@ public class FragmentCategory extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),CategorizedProduct.class);
-                intent.putExtra("Fashion","Woman_Fashion");
+                intent.putExtra("Fashion","Women's Fashion");
                 startActivity(intent);
             }
         });
@@ -57,7 +57,7 @@ public class FragmentCategory extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),CategorizedProduct.class);
-                intent.putExtra("Fashion","Kid_Fashion");
+                intent.putExtra("Fashion","Kid's Fashion");
                 startActivity(intent);
             }
         });

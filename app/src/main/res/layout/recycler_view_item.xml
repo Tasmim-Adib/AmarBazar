@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:textColor="@android:color/black"
+                android:textColor="#ff0000"
                 android:textSize="18sp"
                 android:visibility="gone"
                 android:id="@+id/recycler_view_product_discount_price"

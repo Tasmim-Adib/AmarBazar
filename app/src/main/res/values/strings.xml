@@ -3,14 +3,19 @@
     <string name="nav_home">Home</string>
     <string name="nav_category">Categories</string>
     <string name="nav_myCart">My Cart</string>
+    <string name="nav_offer">Discount Product</string>
     <string name="nav_myOrder">My Orders</string>
     <string name="nav_logout">Log Out</string>
+    <string name="nav_add_product">Add Product</string>
     <string name="nav_open_drawyer">Open Nav Drawyer</string>
     <string name="nav_close_drawyer">Close Nav Drawyer</string>
     <string-array name="choice">
         <item>Customer</item>
         <item>Seller</item>
     </string-array>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="haveAnAccount">Already Have an Account?</string>
     <string name="needAnAccount">Need an Account? Sign Up</string>
@@ -32,6 +37,7 @@
     <string name="view">View</string>
     <string name="decline">Decline</string>
     <string-array name="Sizes">
+        <item>Size</item>
         <item>S</item>
         <item>M</item>
         <item>L</item>
@@ -39,6 +45,7 @@
         <item>XXL</item>
         <item>XXXL</item>
     </string-array>
+
     <string-array name="Pant_sizes">
         <item>27</item>
         <item>28</item>
@@ -64,6 +71,90 @@
     </string-array>
 
     <string name="sizes_prompt">Size</string>
+    <string-array name="women">
+        <item>Choose Subcategory</item>
+        <item>Shalwar Kameez</item>
+        <item>Kurta</item>
+        <item>T-shirt</item>
+        <item>Borkha</item>
+        <item>Saree</item>
+        <item>Hijab</item>
+    </string-array>
+
+    <string-array name="men">
+        <item>Choose Subcategory</item>
+        <item>T-shirt</item>
+        <item>Punjabi</item>
+        <item>Pant</item>
+        <item>Shirt</item>
+        <item>Hoody</item>
+    </string-array>
+
+    <string-array name="kid">
+        <item>Choose Subcategory</item>
+        <item>T-shirt</item>
+        <item>Frock</item>
+        <item>Pant</item>
+        <item>Panjabi</item>
+
+    </string-array>
+
+    <string-array name="kids_fashion">
+        <item>0-6 month</item>
+        <item>1 yr</item>
+        <item>2 yr</item>
+        <item>3 yr</item>
+        <item>4 yr</item>
+        <item>5 yr</item>
+    </string-array>
+
+    <string-array name="T_shirt">
+        <item>Size</item>
+        <item>S</item>
+        <item>M</item>
+        <item>L</item>
+        <item>XL</item>
+        <item>XXL</item>
+    </string-array>
+
+    <string-array name="Shirt_punjabi">
+        <item>Size</item>
+        <item>34</item>
+        <item>36</item>
+        <item>38</item>
+        <item>40</item>
+        <item>42</item>
+        <item>44</item>
+    </string-array>
+
+    <string-array name="WomenFashion">
+        <item>Size</item>
+        <item>32</item>
+        <item>34</item>
+        <item>36</item>
+        <item>38</item>
+        <item>40</item>
+        <item>42</item>
+        <item>44</item>
+    </string-array>
+
+    <string-array name="Saree">
+        <item>Size</item>
+        <item>6 yard</item>
+    </string-array>
+
+    <string-array name="Men_pant">
+        <item>Size</item>
+        <item>28</item>
+        <item>30</item>
+        <item>32</item>
+        <item>34</item>
+        <item>36</item>
+        <item>38</item>
+        <item>40</item>
+        <item>42</item>
+        <item>44</item>
+    </string-array>
 
     <string name="message">Please provide valid information so that we can perform your delivery Properly.</string>
 </resources>

@@ -5,9 +5,14 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +20,7 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
@@ -23,46 +29,98 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-public class AddProductActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class AddProductActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
 
     private ImageView addProductImage;
-    private EditText addProuctId,addProductType,addProductPrice,productSubCategory,productCategory;
+    private EditText addProuctId,addProductType,addProductPrice;
     private Button addProuductButton,okButton;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private Uri imageUri;
     private Bitmap imageStore;
-    private String currentUserId,productKey,size;
+    private String currentUserId,productKey,size,subCategory,category;
     private FirebaseAuth mAuth;
-    private Spinner sizeSpinner;
+    private Spinner spinnerSize,spinnerCat,spinnerSubCat;
     private EditText quantityEditText;
     private HashMap hashMap;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+    private TextView profileName;
+    private CircleImageView profileImage;
+    private View view;
+    private ProgressDialog loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
         init();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Add Product");
+        navigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_shop_add_product);
+        view = navigationView.getHeaderView(0);
+        profileImage = view.findViewById(R.id.nav_profile_image);
+        profileName = view.findViewById(R.id.nav_name);
+        databaseReference.child("Users").child(currentUserId).child("Identity")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String name = snapshot.child("name").getValue().toString();
+                        String image = snapshot.child("image").getValue().toString();
+
+                        profileName.setText(name);
+                        Picasso.get().load(image).into(profileImage);
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+
+
+
+
         hashMap = new HashMap();
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.Sizes,android.R.layout.simple_spinner_item);
+        String[] items = new String[]{"Women's Fashion", "Men's Fashion", "Kid's Fashion"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        spinnerCat.setAdapter(adapter);
+        spinnerCat.setOnItemSelectedListener(this);
+
+        /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.Sizes,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeSpinner.setAdapter(adapter);
-        sizeSpinner.setOnItemSelectedListener(this);
+        sizeSpinner.setOnItemSelectedListener(this);*/
 
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +142,10 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onClick(View v) {
                 productKey = databaseReference.push().getKey();
+                loadingBar.setTitle("Uploading");
+                loadingBar.setMessage("Your product is uploding please wait");
+                loadingBar.setCanceledOnTouchOutside(true);
+                loadingBar.show();
                 saveData();
 
             }
@@ -104,11 +166,15 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
         addProuductButton = findViewById(R.id.add_product_add_button);
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
-        sizeSpinner = findViewById(R.id.add_product_spinner_size);
+        spinnerSize= findViewById(R.id.add_product_spinner_size);
         okButton = findViewById(R.id.add_product_ok_button);
         quantityEditText = findViewById(R.id.add_product_quantity_texView);
-        productSubCategory = findViewById(R.id.add_product_sub_Category);
-        productCategory = findViewById(R.id.add_product_Category);
+        drawerLayout = findViewById(R.id.add_product_drawyer);
+        navigationView = findViewById(R.id.add_product_navigation_view);
+        toolbar = findViewById(R.id.add_product_toolbar);
+        spinnerCat = findViewById(R.id.spinner_cat);
+        spinnerSubCat = findViewById(R.id.spinner_sub_cat);
+        loadingBar = new ProgressDialog(this);
 
 
     }
@@ -154,8 +220,7 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
         productType = addProductType.getText().toString();
         productPrice = addProductPrice.getText().toString();
 
-        subcategory = productSubCategory.getText().toString();
-        category = productCategory.getText().toString();
+
         StorageReference filePath = storageReference.child(productKey + "."+getFileExtension(imageUri));
         filePath.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -165,16 +230,19 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
                         while(!uriTask.isSuccessful());
                         Uri downloadUrl = uriTask.getResult();
 
-                        Upload upload = new Upload(productid,productType,productPrice,downloadUrl.toString(),Integer.toString(0),Integer.toString(0),currentUserId,category);
+                        Upload upload = new Upload(productKey,productid,productType,productPrice,downloadUrl.toString(),Integer.toString(0),Integer.toString(0),currentUserId,getCategory(),getSubCategory());
                         databaseReference.child("Product").child(productKey).setValue(upload);
-                        databaseReference.child("Category").child(category).child(subcategory).child(productKey).child("Price").setValue(productPrice);
+                        databaseReference.child("Category").child(getCategory()).child(getSubCategory()).child(productKey).child("Price").setValue(productPrice);
                         databaseReference.child("Product").child(productKey).child("Sizes").setValue(hashMap);
-                        Toast.makeText(getApplicationContext(), "Successfully stored", Toast.LENGTH_SHORT).show();
+                        databaseReference.child("Users").child(currentUserId).child("My_Product").child(getSubCategory()).child(productKey).child("isHere").setValue("Yes");
+                        Toast.makeText(getApplicationContext(), currentUserId, Toast.LENGTH_SHORT).show();
+                        loadingBar.dismiss();
                         addProductType.setText(null);
                         addProuctId.setText(null);
                         addProductPrice.setText(null);
                         quantityEditText.setText(null);
                         hashMap = new HashMap();
+                        loadingBar.dismiss();
 
                     }
                 })
@@ -194,15 +262,155 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
         this.size = size;
     }
 
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        setSize(text);
+
+        if (spinnerCat.getSelectedItem().equals("Women's Fashion")) {
+            ArrayAdapter adapterSubCat = ArrayAdapter.createFromResource(this, R.array.women, android.R.layout.simple_spinner_dropdown_item);
+            spinnerSubCat.setAdapter(adapterSubCat);
+            String cat = parent.getItemAtPosition(position).toString();
+            setCategory(cat);
+        }
+
+        else if (spinnerCat.getSelectedItem().equals("Men's Fashion")) {
+            ArrayAdapter adapterSubCat = ArrayAdapter.createFromResource(this, R.array.men, android.R.layout.simple_spinner_dropdown_item);
+            spinnerSubCat.setAdapter(adapterSubCat);
+            String cat = parent.getItemAtPosition(position).toString();
+            setCategory(cat);
+        }
+        else if(spinnerCat.getSelectedItem().equals("Kid's Fashion")){
+            ArrayAdapter adapterSubCat = ArrayAdapter.createFromResource(this, R.array.kid, android.R.layout.simple_spinner_dropdown_item);
+            spinnerSubCat.setAdapter(adapterSubCat);
+            String cat = parent.getItemAtPosition(position).toString();
+            setCategory(cat);
+        }
+
+        spinnerSubCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (spinnerCat.getSelectedItem().toString().equals("Men's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("T-shirt")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.T_shirt, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+                }
+                else if (spinnerCat.getSelectedItem().toString().equals("Men's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("Punjabi")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.Shirt_punjabi, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }
+                else if (spinnerCat.getSelectedItem().toString().equals("Men's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("Shirt")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.Shirt_punjabi, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }
+                else if (spinnerCat.getSelectedItem().toString().equals("Men's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("Pant")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.Men_pant, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }
+                else if (spinnerCat.getSelectedItem().toString().equals("Men's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("Hoody")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.T_shirt, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }
+                else if(spinnerCat.getSelectedItem().toString().equals("Women's Fashion")){
+                    if(spinnerSubCat.getSelectedItem().toString().equals("Saree")){
+                        ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.Saree, R.layout.support_simple_spinner_dropdown_item);
+                        spinnerSize.setAdapter(adapterSize);
+                    }
+
+                    else{
+                        ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.WomenFashion, R.layout.support_simple_spinner_dropdown_item);
+                        spinnerSize.setAdapter(adapterSize);
+                    }
+                }
+                /*else if (spinnerCat.getSelectedItem().toString().equals("Women's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("Shalwar Kameez")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.WomenFashion, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }
+                else if (spinnerCat.getSelectedItem().toString().equals("Women's Fashion") && spinnerSubCat.getSelectedItem().toString().equals("Kurta")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.WomenFashion, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }*/else if (spinnerCat.getSelectedItem().toString().equals("Kid's Fashion")) {
+                    ArrayAdapter adapterSize = ArrayAdapter.createFromResource(getApplicationContext(), R.array.kids_fashion, R.layout.support_simple_spinner_dropdown_item);
+                    spinnerSize.setAdapter(adapterSize);
+
+                }
+                String cat = parent.getItemAtPosition(position).toString();
+                setSubCategory(cat);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinnerSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String text = parent.getItemAtPosition(position).toString();
+                setSize(text);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_shop_home:
+                Intent intentHome = new Intent(AddProductActivity.this, ShopHome.class);
+                startActivity(intentHome);
+                finish();
+                break;
+            case R.id.nav_shop_categories:
+                Intent intentCat = new Intent(AddProductActivity.this, ShopCategory.class);
+                startActivity(intentCat);
+                finish();
+                break;
+            case R.id.nav_shop_add_product:
+                break;
+            case R.id.nav_shop_orders:
+                Intent orderIntent = new Intent(AddProductActivity.this,ShopOrder.class);
+                startActivity(orderIntent);
+                finish();
+                break;
+            case R.id.nav_shop_logout:
+               // mAuth.signOut();
+                startActivity(new Intent(AddProductActivity.this, MainActivity.class));
+                finish();
+
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

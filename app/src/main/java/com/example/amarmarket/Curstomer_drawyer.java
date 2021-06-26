@@ -93,9 +93,16 @@ public class Curstomer_drawyer extends AppCompatActivity implements NavigationVi
                     new FragmentHome()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
 
-
-
         }
+
+        shoppingCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
+                        new FragmentMyCart()).commit();
+                navigationView.setCheckedItem(R.id.nav_myCart);
+            }
+        });
 
 
     }
@@ -115,25 +122,35 @@ public class Curstomer_drawyer extends AppCompatActivity implements NavigationVi
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
                         new FragmentHome()).commit();
+                navigationView.setCheckedItem(R.id.nav_home);
                 break;
             case R.id.nav_category:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
                         new FragmentCategory()).commit();
+                navigationView.setCheckedItem(R.id.nav_category);
+                break;
+            case R.id.nav_offer:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
+                        new Fragment_offer()).commit();
+                navigationView.setCheckedItem(R.id.nav_offer);
                 break;
             case R.id.nav_myCart:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
                         new FragmentMyCart()).commit();
+                navigationView.setCheckedItem(R.id.nav_myCart);
                 break;
             case R.id.nav_myOrders:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
                         new FragmentMyOrder()).commit();
+                navigationView.setCheckedItem(R.id.nav_myOrders);
                 break;
             case R.id.nav_update_profile:
                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout,
                        new FragmentUpdateProfile()).commit();
+                navigationView.setCheckedItem(R.id.nav_update_profile);
                 break;
             case R.id.nav_logout:
-               // mAuth.signOut();
+                mAuth.signOut();
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(intent);
                 finish();

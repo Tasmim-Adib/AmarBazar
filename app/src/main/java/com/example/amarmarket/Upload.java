@@ -1,13 +1,14 @@
 package com.example.amarmarket;
 
 public class Upload {
-    private String productID,productType,productPrice,productImageUrl,reviews,ordersCount,shopId,category;
+    private String firebaseId,productID,productType,productPrice,productImageUrl,reviews,ordersCount,shopId,category,subCategory;
 
     public Upload(){
 
     }
 
-    public Upload(String productID, String productType, String productPrice,String productImageUrl,String reviews,String ordersCount,String shopId,String category) {
+    public Upload(String firebaseId,String productID, String productType, String productPrice,String productImageUrl,String reviews,String ordersCount,String shopId,String category,String subCategory) {
+        this.firebaseId = firebaseId;
         this.productID = productID;
         this.productType = productType;
         this.productPrice = productPrice;
@@ -16,6 +17,15 @@ public class Upload {
         this.ordersCount = ordersCount;
         this.shopId = shopId;
         this.category = category;
+        this.subCategory = subCategory;
+    }
+
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
     }
 
     public String getProductID() {
@@ -80,5 +90,13 @@ public class Upload {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
     }
 }

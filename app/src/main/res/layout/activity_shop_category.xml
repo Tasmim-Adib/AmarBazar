@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout_cat"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#77B89733"
+    android:fitsSystemWindows="true"
+
+    tools:context=".ShopCategory">
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view_category"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/shop_drawyer_menu"
+        android:layout_gravity="start"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_category"
+                android:background="#CA7D08"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:navigationIcon="@drawable/ic_menu" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/women_fashion_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
+                    android:text="Women's Fashion"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#32A3D3CF">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/featured_recycler_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/men_fashion_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
+                    android:text="Men's Fashion"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#32A3D3CF">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/featured_recycler2_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/kid_fashion_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
+                    android:text="Kid's Fashion"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#32A3D3CF">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/featured_recycler3_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
